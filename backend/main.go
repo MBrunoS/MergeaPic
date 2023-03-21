@@ -11,7 +11,6 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"sync"
 
 	"github.com/disintegration/imaging"
 )
@@ -19,8 +18,6 @@ import (
 type Response struct {
 	Images []string `json:"images"`
 }
-
-var wg sync.WaitGroup
 
 func main() {
 	http.HandleFunc("/merge", mergeImagesHandler)
@@ -52,15 +49,18 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := r.MultipartForm.File["photos"]
-	resultImages := make([]string, 0)
+	resultImages := make(chan []string, len(files))
+
 	for _, file := range files {
-		wg.Add(1)
-		go mergeImages(file, overlayImg, &resultImages)
+		go mergeImages(file, overlayImg, resultImages)
 	}
 
-	wg.Wait()
+	var resp Response
 
-	resp := Response{Images: resultImages}
+	for i := 0; i < len(files); i++ {
+		resp.Images = append(resp.Images, <-resultImages...)
+	}
+
 	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
 		log.Printf("failed to encode response: %s", err)
@@ -73,8 +73,7 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResponse)
 }
 
-func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, resultImages *[]string) {
-	defer wg.Done()
+func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, resultImages chan []string) {
 
 	photoReader, err := photoFile.Open()
 	if err != nil {
@@ -98,11 +97,10 @@ func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, result
 	draw.Draw(finalImg, b, overlayImg, image.Point{}, draw.Over)
 
 	var buff bytes.Buffer
-
 	if err := jpeg.Encode(&buff, finalImg, &jpeg.Options{Quality: jpeg.DefaultQuality}); err != nil {
 		log.Printf("failed to encode merged image file: %s", err)
 		return
 	}
 
-	*resultImages = append(*resultImages, base64.StdEncoding.EncodeToString(buff.Bytes()))
+	resultImages <- []string{base64.StdEncoding.EncodeToString(buff.Bytes())}
 }
