@@ -1,9 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"image"
 	"image/draw"
 	"image/jpeg"
@@ -11,8 +11,6 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/disintegration/imaging"
@@ -99,34 +97,12 @@ func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, result
 	draw.Draw(finalImg, b, resizedImg, image.Point{}, draw.Src)
 	draw.Draw(finalImg, b, overlayImg, image.Point{}, draw.Over)
 
-	resultFileName := filepath.Join("merged_images", fmt.Sprintf("%s_merged.jpg", photoFile.Filename))
-	if err := os.MkdirAll(filepath.Dir(resultFileName), 0755); err != nil {
-		log.Printf("failed to create merged images directory: %s", err)
+	var buff bytes.Buffer
+
+	if err := jpeg.Encode(&buff, finalImg, &jpeg.Options{Quality: jpeg.DefaultQuality}); err != nil {
+		log.Printf("failed to encode merged image file: %s", err)
 		return
 	}
 
-	result, err := os.Create(resultFileName)
-	if err != nil {
-		log.Printf("failed to create merged image file %s: %s", resultFileName, err)
-		return
-	}
-	defer result.Close()
-
-	if err := jpeg.Encode(result, finalImg, &jpeg.Options{Quality: jpeg.DefaultQuality}); err != nil {
-		log.Printf("failed to encode merged image file %s: %s", resultFileName, err)
-		return
-	}
-
-	imgBytes, err := os.ReadFile(resultFileName)
-	if err != nil {
-		log.Printf("failed to read merged image file %s: %s", resultFileName, err)
-		return
-	}
-
-	*resultImages = append(*resultImages, base64.StdEncoding.EncodeToString(imgBytes))
-
-	if err := os.Remove(resultFileName); err != nil {
-		log.Printf("failed to remove merged image file %s: %s", resultFileName, err)
-		return
-	}
+	*resultImages = append(*resultImages, base64.StdEncoding.EncodeToString(buff.Bytes()))
 }
