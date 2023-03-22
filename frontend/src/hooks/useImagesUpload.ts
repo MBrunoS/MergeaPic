@@ -26,14 +26,22 @@ export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
   };
 
   useEffect(() => {
-    const images = imagesFiles.map((imgFile) => ({
-      src: URL.createObjectURL(imgFile),
-      alt: imgFile.name,
-    }));
-    setImages(images);
-    return () => {
-      images.forEach((image) => URL.revokeObjectURL(image.src));
-    };
+    const filePromises = imagesFiles.map((imgFile) => {
+      return new Promise<Preview>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve({
+            src: reader.result as string,
+            alt: imgFile.name,
+          });
+        };
+        reader.readAsDataURL(imgFile);
+      });
+    });
+
+    Promise.all(filePromises)
+      .then((images) => setImages(images))
+      .catch((error) => console.log(error));
   }, [imagesFiles]);
 
   return { images, handleImagesChange };
