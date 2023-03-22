@@ -1,19 +1,12 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Stack,
-  Text,
-  Icon,
-  VisuallyHidden,
-  chakra,
-} from "@chakra-ui/react";
-import { Header } from "./components";
-import { UploadCard } from "./components/UploadCard";
+import { Stack } from "@chakra-ui/react";
+import { useContext } from "react";
+import { Header, PreviewList } from "./components";
+import { UploadImagesCard } from "./components/UploadImagesCard";
+import { AppContext } from "./context/AppContext";
 
 export function App() {
+  const { images } = useContext(AppContext);
+
   return (
     <Stack
       p={10}
@@ -28,7 +21,7 @@ export function App() {
     >
       <Header />
 
-      <UploadCard />
+      {images.length === 0 ? <UploadImagesCard /> : <PreviewList />}
     </Stack>
   );
 }

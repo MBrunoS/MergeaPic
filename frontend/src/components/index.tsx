@@ -1,3 +1,3 @@
 export { Header } from "./Header";
-export { UploadCard } from "./UploadCard";
+export { UploadImagesCard } from "./UploadImagesCard";
 export { PreviewList } from "./PreviewList";
