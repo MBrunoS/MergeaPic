@@ -1,23 +1,11 @@
 import { Flex, IconButton, Image, Stack, Text } from "@chakra-ui/react";
 import { X } from "@phosphor-icons/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Preview } from "../@types";
 import { AppContext } from "../context/AppContext";
 
 export const PreviewList: React.FC = () => {
-  const [previews, setPreviews] = React.useState<Preview[]>([]);
-  const { images } = useContext(AppContext);
-
-  useEffect(() => {
-    const previews = images.map((image) => ({
-      src: URL.createObjectURL(image),
-      alt: image.name,
-    }));
-    setPreviews(previews);
-    return () => {
-      previews.forEach((preview) => URL.revokeObjectURL(preview.src));
-    };
-  }, [images]);
+  const { previews, setPreviews } = useContext(AppContext);
 
   function handleRemove(name: string) {
     const newPreviews = previews.filter((preview) => preview.alt !== name);

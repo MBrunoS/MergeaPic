@@ -1,8 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
+import { Preview } from "../@types";
 import { useImagesUpload } from "../hooks";
 
 type AppContextType = {
-  images: File[];
+  previews: Preview[];
+  setPreviews: React.Dispatch<React.SetStateAction<Preview[]>>;
   handleImagesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -13,10 +15,10 @@ type AppProviderProps = {
 };
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const { images, handleImagesChange } = useImagesUpload();
+  const { previews, setPreviews, handleImagesChange } = useImagesUpload();
 
   return (
-    <AppContext.Provider value={{ images, handleImagesChange }}>
+    <AppContext.Provider value={{ previews, setPreviews, handleImagesChange }}>
       {children}
     </AppContext.Provider>
   );

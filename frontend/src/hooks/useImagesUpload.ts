@@ -1,10 +1,12 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Preview } from "../@types";
 
 const MAX_FILES = 20;
 const MAX_FILE_SIZE = 2 << 20; // 2 MB
 
 export function useImagesUpload() {
-  const [images, setImages] = useState<File[]>([]);
+  const [imagesFiles, setImagesFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<Preview[]>([]);
 
   const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -17,9 +19,20 @@ export function useImagesUpload() {
         files.length = MAX_FILES;
       }
 
-      setImages(files);
+      setImagesFiles(files);
     }
   };
 
-  return { images, handleImagesChange };
+  useEffect(() => {
+    const images = imagesFiles.map((imgFile) => ({
+      src: URL.createObjectURL(imgFile),
+      alt: imgFile.name,
+    }));
+    setPreviews(images);
+    return () => {
+      images.forEach((image) => URL.revokeObjectURL(image.src));
+    };
+  }, [imagesFiles]);
+
+  return { previews, setPreviews, handleImagesChange };
 }
