@@ -1275,6 +1275,11 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@phosphor-icons/react@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@phosphor-icons/react/-/react-2.0.6.tgz#6b05f206b7a7dc5946081fbba92b11aea5ff134f"
+  integrity sha512-vT5Tv+isibcRO1ATPW+cZs2w46n512SfShRX9kqZbETht8ME11CT387APBbcW9EAeBFEGM6buoYxP+0/IJJRKg==
+
 "@popperjs/core@^2.9.3":
   version "2.11.6"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.6.tgz#cee20bd55e68a1720bdab363ecf0c821ded4cd45"

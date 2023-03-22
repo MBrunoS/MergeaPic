@@ -1,15 +1,23 @@
-import { Stack } from "@chakra-ui/react";
+import { Button, ButtonGroup, Stack } from "@chakra-ui/react";
 import { useContext } from "react";
+import { ArrowRight, House } from "@phosphor-icons/react";
 import { Header, PreviewList } from "./components";
 import { UploadImagesCard } from "./components/UploadImagesCard";
 import { AppContext } from "./context/AppContext";
 
 export function App() {
-  const { images } = useContext(AppContext);
+  const { previews, setPreviews } = useContext(AppContext);
+
+  function handleReturn() {
+    setPreviews([]);
+  }
+
+  function handleContinue() {}
 
   return (
     <Stack
-      p={10}
+      p={{ base: 4, md: 8, lg: 12 }}
+      pb={{ base: 12, md: 16, lg: 20 }}
       minH="100vh"
       alignItems="center"
       justifyContent="center"
@@ -21,7 +29,29 @@ export function App() {
     >
       <Header />
 
-      {images.length === 0 ? <UploadImagesCard /> : <PreviewList />}
+      {previews.length === 0 ? (
+        <UploadImagesCard />
+      ) : (
+        <>
+          <PreviewList />
+          <ButtonGroup colorScheme="blue" position="fixed" bottom={4}>
+            <Button
+              leftIcon={<House weight="bold" />}
+              variant="outline"
+              background="white"
+              onClick={handleReturn}
+            >
+              Return
+            </Button>
+            <Button
+              rightIcon={<ArrowRight weight="bold" />}
+              onClick={handleContinue}
+            >
+              Continue
+            </Button>
+          </ButtonGroup>
+        </>
+      )}
     </Stack>
   );
 }
