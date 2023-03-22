@@ -39,7 +39,7 @@ export const UploadImagesCard: React.FC = () => {
         >
           <Text as="span">Click here to choose the photos</Text>
           <Text as="span" fontSize="sm">
-            (Max file size: 2MB)
+            (Max number of files: 20 / Max file size: 2MB)
           </Text>
           <VisuallyHiddenInput
             id="overlay"

@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from "react";
 
+const MAX_FILES = 20;
 const MAX_FILE_SIZE = 2 << 20; // 2 MB
 
 export function useImagesUpload() {
@@ -10,6 +11,12 @@ export function useImagesUpload() {
       const files = Array.from(e.target.files).filter(
         (file) => file.size <= MAX_FILE_SIZE
       );
+
+      if (files.length > MAX_FILES) {
+        alert(`Only ${MAX_FILES} images will be uploaded`);
+        files.length = MAX_FILES;
+      }
+
       setImages(files);
     }
   };
