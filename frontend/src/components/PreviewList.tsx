@@ -1,20 +1,19 @@
 import { Flex, IconButton, Image, Stack, Text } from "@chakra-ui/react";
 import { X } from "@phosphor-icons/react";
 import React, { useContext } from "react";
-import { Preview } from "../@types";
 import { AppContext } from "../context/AppContext";
 
 export const PreviewList: React.FC = () => {
-  const { previews, setPreviews } = useContext(AppContext);
+  const { photos, setPhotos } = useContext(AppContext);
 
   function handleRemove(name: string) {
-    const newPreviews = previews.filter((preview) => preview.alt !== name);
-    setPreviews(newPreviews);
+    const newPreviews = photos.filter((photo) => photo.alt !== name);
+    setPhotos(newPreviews);
   }
 
   return (
     <Stack maxW="4xl">
-      {previews.map((item) => (
+      {photos.map((item) => (
         <Flex
           key={item.alt}
           align="center"

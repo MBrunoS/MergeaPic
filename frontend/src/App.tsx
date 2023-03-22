@@ -1,18 +1,11 @@
-import { Button, ButtonGroup, Stack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { useContext } from "react";
-import { ArrowRight, House } from "@phosphor-icons/react";
-import { Header, PreviewList } from "./components";
-import { UploadImagesCard } from "./components/UploadImagesCard";
+import { Steps } from "./@types";
+import { Header, HomeScreen, OverlayScreen, PreviewScreen } from "./components";
 import { AppContext } from "./context/AppContext";
 
 export function App() {
-  const { previews, setPreviews } = useContext(AppContext);
-
-  function handleReturn() {
-    setPreviews([]);
-  }
-
-  function handleContinue() {}
+  const { currentStep } = useContext(AppContext);
 
   return (
     <Stack
@@ -29,29 +22,9 @@ export function App() {
     >
       <Header />
 
-      {previews.length === 0 ? (
-        <UploadImagesCard />
-      ) : (
-        <>
-          <PreviewList />
-          <ButtonGroup colorScheme="blue" position="fixed" bottom={4}>
-            <Button
-              leftIcon={<House weight="bold" />}
-              variant="outline"
-              background="white"
-              onClick={handleReturn}
-            >
-              Return
-            </Button>
-            <Button
-              rightIcon={<ArrowRight weight="bold" />}
-              onClick={handleContinue}
-            >
-              Continue
-            </Button>
-          </ButtonGroup>
-        </>
-      )}
+      {currentStep === Steps.Home && <HomeScreen />}
+      {currentStep === Steps.Preview && <PreviewScreen />}
+      {currentStep === Steps.Overlay && <OverlayScreen />}
     </Stack>
   );
 }

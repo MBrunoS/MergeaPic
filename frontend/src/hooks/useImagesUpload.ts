@@ -8,7 +8,7 @@ type UseImagesUpload = {
 
 export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
   const [imagesFiles, setImagesFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<Preview[]>([]);
+  const [images, setImages] = useState<Preview[]>([]);
 
   const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -30,11 +30,11 @@ export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
       src: URL.createObjectURL(imgFile),
       alt: imgFile.name,
     }));
-    setPreviews(images);
+    setImages(images);
     return () => {
       images.forEach((image) => URL.revokeObjectURL(image.src));
     };
   }, [imagesFiles]);
 
-  return { previews, setPreviews, handleImagesChange };
+  return { images, handleImagesChange };
 }
