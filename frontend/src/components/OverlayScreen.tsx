@@ -17,15 +17,11 @@ export const OverlayScreen: React.FC = () => {
     if (!images.length) return;
 
     setOverlay(images[0]);
-    setCurrentStep(Steps.Upload);
+    setCurrentStep(Steps.Confirm);
   }, [images]);
 
   function handleReturn() {
     setCurrentStep(Steps.Preview);
-  }
-
-  function handleContinue() {
-    setCurrentStep(Steps.Upload);
   }
 
   return (
@@ -45,12 +41,6 @@ export const OverlayScreen: React.FC = () => {
           onClick={handleReturn}
         >
           Return
-        </Button>
-        <Button
-          rightIcon={<ArrowRight weight="bold" />}
-          onClick={handleContinue}
-        >
-          Continue
         </Button>
       </ButtonGroup>
     </>

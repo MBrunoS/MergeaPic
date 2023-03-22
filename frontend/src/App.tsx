@@ -1,7 +1,13 @@
 import { Stack } from "@chakra-ui/react";
 import { useContext } from "react";
 import { Steps } from "./@types";
-import { Header, HomeScreen, OverlayScreen, PreviewScreen } from "./components";
+import {
+  ConfirmScreen,
+  Header,
+  HomeScreen,
+  OverlayScreen,
+  PreviewScreen,
+} from "./components";
 import { AppContext } from "./context/AppContext";
 
 export function App() {
@@ -25,6 +31,7 @@ export function App() {
       {currentStep === Steps.Home && <HomeScreen />}
       {currentStep === Steps.Preview && <PreviewScreen />}
       {currentStep === Steps.Overlay && <OverlayScreen />}
+      {currentStep === Steps.Confirm && <ConfirmScreen />}
     </Stack>
   );
 }

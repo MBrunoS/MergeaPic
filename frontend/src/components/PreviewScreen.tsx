@@ -3,10 +3,10 @@ import { ArrowRight, House } from "@phosphor-icons/react";
 import { useContext } from "react";
 import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
-import { PreviewList } from "./PreviewList";
+import { PreviewImages } from "./PreviewImages";
 
 export const PreviewScreen: React.FC = () => {
-  const { setPhotos, setCurrentStep } = useContext(AppContext);
+  const { photos, setPhotos, setCurrentStep } = useContext(AppContext);
 
   function handleReturn() {
     setPhotos([]);
@@ -19,7 +19,7 @@ export const PreviewScreen: React.FC = () => {
 
   return (
     <>
-      <PreviewList />
+      <PreviewImages images={photos} updateImages={setPhotos} />
       <ButtonGroup colorScheme="blue" position="fixed" bottom={4}>
         <Button
           leftIcon={<House weight="bold" />}
