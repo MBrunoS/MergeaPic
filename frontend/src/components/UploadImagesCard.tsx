@@ -8,9 +8,19 @@ import {
 import React, { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
-export const UploadImagesCard: React.FC = () => {
-  const { handleImagesChange } = useContext(AppContext);
+type UploadImagesCardProps = {
+  text: string;
+  subtitle: string;
+  handleImagesChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isMultiple?: boolean;
+};
 
+export const UploadImagesCard: React.FC<UploadImagesCardProps> = ({
+  text,
+  subtitle,
+  handleImagesChange,
+  isMultiple = true,
+}) => {
   return (
     <Card w={{ base: "full", md: "50%" }}>
       <CardBody>
@@ -37,16 +47,16 @@ export const UploadImagesCard: React.FC = () => {
           justifyContent="center"
           flexDirection="column"
         >
-          <Text as="span">Click here to choose the photos</Text>
+          <Text as="span">{text}</Text>
           <Text as="span" fontSize="sm">
-            (Max number of files: 20 / Max file size: 2MB)
+            {subtitle}
           </Text>
           <VisuallyHiddenInput
             id="overlay"
             type="file"
             onChange={handleImagesChange}
             accept="image/*"
-            multiple
+            multiple={isMultiple}
           />
         </chakra.label>
       </CardBody>

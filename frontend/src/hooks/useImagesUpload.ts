@@ -1,22 +1,24 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Preview } from "../@types";
 
-const MAX_FILES = 20;
-const MAX_FILE_SIZE = 2 << 20; // 2 MB
+type UseImagesUpload = {
+  maxFiles: number;
+  maxFileSize: number;
+};
 
-export function useImagesUpload() {
+export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
   const [imagesFiles, setImagesFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<Preview[]>([]);
 
   const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files).filter(
-        (file) => file.size <= MAX_FILE_SIZE
+        (file) => file.size <= maxFileSize
       );
 
-      if (files.length > MAX_FILES) {
-        alert(`Only ${MAX_FILES} images will be uploaded`);
-        files.length = MAX_FILES;
+      if (files.length > maxFiles) {
+        alert(`Only ${maxFiles} images will be uploaded`);
+        files.length = maxFiles;
       }
 
       setImagesFiles(files);
