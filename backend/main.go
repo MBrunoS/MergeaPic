@@ -26,6 +26,17 @@ func main() {
 }
 
 func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v request received", r.Method)
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -47,9 +58,11 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	log.Println("Overlay image decoded")
 
 	files := r.MultipartForm.File["photos"]
 	resultImages := make(chan []string, len(files))
+	log.Printf("Starting to merge %v images", len(files))
 
 	for _, file := range files {
 		go mergeImages(file, overlayImg, resultImages)
@@ -71,6 +84,8 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResponse)
+
+	log.Println("Response sent")
 }
 
 func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, resultImages chan []string) {
