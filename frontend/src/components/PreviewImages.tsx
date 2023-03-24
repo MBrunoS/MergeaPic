@@ -23,15 +23,20 @@ export const PreviewImages: React.FC<PreviewImagesProps> = ({
 }) => {
   function handleRemove(name: string) {
     if (!updateImages) return;
-    const newImages = images.filter((image) => image.alt !== name);
+    const newImages = images.filter((image) => image.name !== name);
     updateImages(newImages);
   }
 
   if (variant === "grid") {
     return (
       <SimpleGrid columns={[2, null, 3, 5]} spacing={4}>
-        {images.map((item) => (
-          <Image key={item.alt} src={item.src} alt={item.alt} rounded="md" />
+        {images.map((image) => (
+          <Image
+            key={image.name}
+            src={image.src}
+            alt={image.name}
+            rounded="md"
+          />
         ))}
       </SimpleGrid>
     );
@@ -39,9 +44,9 @@ export const PreviewImages: React.FC<PreviewImagesProps> = ({
 
   return (
     <Stack maxW="4xl">
-      {images.map((item) => (
+      {images.map((image) => (
         <Flex
-          key={item.alt}
+          key={image.name}
           align="center"
           gap={4}
           justify="space-between"
@@ -51,18 +56,18 @@ export const PreviewImages: React.FC<PreviewImagesProps> = ({
           overflow="hidden"
         >
           <Image
-            src={item.src}
-            alt={item.alt}
+            src={image.src}
+            alt={image.name}
             w={{ base: "35%", md: "30%", lg: "20%" }}
           />
-          <Text mr={updateImages ? 0 : 8}>{item.alt}</Text>
+          <Text mr={updateImages ? 0 : 8}>{image.name}</Text>
           {updateImages && (
             <IconButton
               colorScheme="red"
               aria-label="Remove"
               variant="ghost"
               icon={<X />}
-              onClick={() => handleRemove(item.alt)}
+              onClick={() => handleRemove(image.name)}
               mr={4}
             />
           )}

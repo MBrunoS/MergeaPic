@@ -1,19 +1,19 @@
 import { Button, ButtonGroup, Flex, Stack, Text } from "@chakra-ui/react";
-import { ArrowLeft, UploadSimple } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowsMerge } from "@phosphor-icons/react";
 import { useContext } from "react";
 import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { PreviewImages } from "./PreviewImages";
 
 export const ConfirmScreen: React.FC = () => {
-  const { photos, setCurrentStep, overlay } = useContext(AppContext);
+  const { photos, overlay, setCurrentStep } = useContext(AppContext);
 
   function handleReturn() {
     setCurrentStep(Steps.Overlay);
   }
 
   function handleContinue() {
-    setCurrentStep(Steps.Upload);
+    setCurrentStep(Steps.Merge);
   }
 
   return (
@@ -21,14 +21,19 @@ export const ConfirmScreen: React.FC = () => {
       <Stack maxW="4xl">
         <Text>Overlay:</Text>
         <Flex px={[8, null, 12, 16]} align="center">
-          <PreviewImages images={[overlay]} />
+          {overlay.name && <PreviewImages images={[overlay]} />}
         </Flex>
 
         <Text>Photos:</Text>
         <PreviewImages images={photos} variant="grid" />
       </Stack>
 
-      <ButtonGroup colorScheme="blue" position="fixed" bottom={4}>
+      <ButtonGroup
+        colorScheme="blue"
+        position="fixed"
+        bottom={4}
+        alignItems="center"
+      >
         <Button
           leftIcon={<ArrowLeft weight="bold" />}
           variant="outline"
@@ -38,10 +43,11 @@ export const ConfirmScreen: React.FC = () => {
           Return
         </Button>
         <Button
-          rightIcon={<UploadSimple weight="bold" />}
+          rightIcon={<ArrowsMerge weight="bold" />}
           onClick={handleContinue}
+          size="lg"
         >
-          Upload
+          Merge
         </Button>
       </ButtonGroup>
     </>

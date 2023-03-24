@@ -5,3 +5,4 @@ export { HomeScreen } from "./HomeScreen";
 export { PreviewScreen } from "./PreviewScreen";
 export { OverlayScreen } from "./OverlayScreen";
 export { ConfirmScreen } from "./ConfirmScreen";
+export { MergeScreen } from "./MergeScreen";

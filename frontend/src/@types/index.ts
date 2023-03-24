@@ -1,6 +1,6 @@
 export type Preview = {
   src: string;
-  alt: string;
+  name: string;
 };
 
 export enum Steps {
@@ -8,6 +8,5 @@ export enum Steps {
   Preview,
   Overlay,
   Confirm,
-  Upload,
-  Download,
+  Merge,
 }

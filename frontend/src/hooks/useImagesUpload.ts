@@ -32,7 +32,7 @@ export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
         reader.onload = () => {
           resolve({
             src: reader.result as string,
-            alt: imgFile.name,
+            name: imgFile.name,
           });
         };
         reader.readAsDataURL(imgFile);

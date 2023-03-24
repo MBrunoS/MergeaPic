@@ -5,6 +5,7 @@ import {
   ConfirmScreen,
   Header,
   HomeScreen,
+  MergeScreen,
   OverlayScreen,
   PreviewScreen,
 } from "./components";
@@ -32,6 +33,7 @@ export function App() {
       {currentStep === Steps.Preview && <PreviewScreen />}
       {currentStep === Steps.Overlay && <OverlayScreen />}
       {currentStep === Steps.Confirm && <ConfirmScreen />}
+      {currentStep === Steps.Merge && <MergeScreen />}
     </Stack>
   );
 }
