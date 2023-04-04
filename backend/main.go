@@ -60,7 +60,7 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Overlay image decoded")
 
-	files := r.MultipartForm.File["photos"]
+	files := r.MultipartForm.File["photos[]"]
 	resultImages := make(chan []string, len(files))
 	log.Printf("Starting to merge %v images", len(files))
 
