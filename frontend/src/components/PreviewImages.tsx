@@ -8,11 +8,10 @@ import {
 } from "@chakra-ui/react";
 import { X } from "@phosphor-icons/react";
 import React from "react";
-import { Preview } from "../@types";
 
 type PreviewImagesProps = {
-  images: Preview[];
-  updateImages?: React.Dispatch<React.SetStateAction<Preview[]>>;
+  images: File[];
+  updateImages?: React.Dispatch<React.SetStateAction<File[]>>;
   variant?: "grid" | "list";
 };
 
@@ -33,7 +32,7 @@ export const PreviewImages: React.FC<PreviewImagesProps> = ({
         {images.map((image) => (
           <Image
             key={image.name}
-            src={image.src}
+            src={URL.createObjectURL(image)}
             alt={image.name}
             rounded="md"
           />
@@ -56,7 +55,7 @@ export const PreviewImages: React.FC<PreviewImagesProps> = ({
           overflow="hidden"
         >
           <Image
-            src={image.src}
+            src={URL.createObjectURL(image)}
             alt={image.name}
             w={{ base: "35%", md: "30%", lg: "20%" }}
           />

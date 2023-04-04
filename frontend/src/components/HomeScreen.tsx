@@ -6,7 +6,7 @@ import { UploadImagesCard } from "./UploadImagesCard";
 
 export const HomeScreen: React.FC = () => {
   const { setPhotos, setCurrentStep } = useContext(AppContext);
-  const { images, handleImagesChange } = useImagesUpload({
+  const [images, handleImagesChange] = useImagesUpload({
     maxFiles: 20,
     maxFileSize: 2 * 1024 * 1024,
   });

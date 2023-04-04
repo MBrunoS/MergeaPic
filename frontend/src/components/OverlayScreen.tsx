@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react";
 import React, { useContext, useEffect } from "react";
 import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
@@ -8,7 +8,7 @@ import { UploadImagesCard } from "./UploadImagesCard";
 
 export const OverlayScreen: React.FC = () => {
   const { setOverlay, setCurrentStep } = useContext(AppContext);
-  const { images, handleImagesChange } = useImagesUpload({
+  const [images, handleImagesChange] = useImagesUpload({
     maxFiles: 1,
     maxFileSize: 2 * 1024 * 1024,
   });

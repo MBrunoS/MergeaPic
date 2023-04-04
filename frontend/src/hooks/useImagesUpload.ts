@@ -1,14 +1,15 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { Preview } from "../@types";
+import { ChangeEvent, useState } from "react";
 
 type UseImagesUpload = {
   maxFiles: number;
   maxFileSize: number;
 };
 
-export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
+export function useImagesUpload({
+  maxFiles,
+  maxFileSize,
+}: UseImagesUpload): [File[], (e: ChangeEvent<HTMLInputElement>) => void] {
   const [imagesFiles, setImagesFiles] = useState<File[]>([]);
-  const [images, setImages] = useState<Preview[]>([]);
 
   const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -25,24 +26,5 @@ export function useImagesUpload({ maxFiles, maxFileSize }: UseImagesUpload) {
     }
   };
 
-  useEffect(() => {
-    const filePromises = imagesFiles.map((imgFile) => {
-      return new Promise<Preview>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          resolve({
-            src: reader.result as string,
-            name: imgFile.name,
-          });
-        };
-        reader.readAsDataURL(imgFile);
-      });
-    });
-
-    Promise.all(filePromises)
-      .then((images) => setImages(images))
-      .catch((error) => console.log(error));
-  }, [imagesFiles]);
-
-  return { images, handleImagesChange };
+  return [imagesFiles, handleImagesChange];
 }
