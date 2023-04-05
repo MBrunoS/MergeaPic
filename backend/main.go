@@ -11,6 +11,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 
 	"github.com/disintegration/imaging"
 )
@@ -21,8 +22,14 @@ type Response struct {
 
 func main() {
 	http.HandleFunc("/merge", mergeImagesHandler)
-	log.Println("Server started on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Println("Server started on 0.0.0.0:" + port)
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
 }
 
 func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
