@@ -2,38 +2,57 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"image"
 	"image/draw"
 	"image/jpeg"
 	"image/png"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/disintegration/imaging"
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
 type Response struct {
 	Images []string `json:"images"`
 }
 
+const (
+	maxFileSize = 2 << 20 // 2MB
+)
+
 func main() {
-	http.HandleFunc("/merge", mergeImagesHandler)
+	r := mux.NewRouter()
+	r.HandleFunc("/merge", mergeImagesHandler).Methods("POST", "OPTIONS")
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	log.Println("Server started on 0.0.0.0:" + port)
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, nil))
+	server := &http.Server{
+		Addr:    "0.0.0.0:" + port,
+		Handler: r,
+	}
+
+	logrus.Infof("Server started on 0.0.0.0:%s", port)
+	logrus.Fatal(server.ListenAndServe())
 }
 
 func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
-	log.Printf("%v request received", r.Method)
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+	defer cancel()
+
+	logger := logrus.WithFields(logrus.Fields{
+		"method": r.Method,
+		"path":   r.URL.Path,
+	})
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
@@ -44,47 +63,54 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusBadRequest)
+	err := r.ParseMultipartForm(maxFileSize)
+	if err != nil {
+		logger.Errorf("Failed to parse multipart form: %s", err)
+		http.Error(w, "Invalid form data", http.StatusBadRequest)
 		return
 	}
 
-	r.ParseMultipartForm(2 << 20) // Limit file size to 2MB
-
 	overlayImgFile, _, err := r.FormFile("overlay")
 	if err != nil {
-		log.Printf("Failed to get overlay image: %s", err)
-		w.WriteHeader(http.StatusBadRequest)
+		logger.Errorf("Failed to get overlay image: %s", err)
+		http.Error(w, "Missing overlay image", http.StatusBadRequest)
 		return
 	}
 	defer overlayImgFile.Close()
 
 	overlayImg, err := png.Decode(overlayImgFile)
 	if err != nil {
-		log.Printf("Failed to decode overlay image: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		logger.Errorf("Failed to decode overlay image: %s", err)
+		http.Error(w, "Invalid overlay image", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Overlay image decoded")
+	logger.Info("Overlay image decoded")
 
 	files := r.MultipartForm.File["photos[]"]
 	resultImages := make(chan []string, len(files))
-	log.Printf("Starting to merge %v images", len(files))
+	logger.Infof("Starting to merge %d images", len(files))
 
 	for _, file := range files {
-		go mergeImages(file, overlayImg, resultImages)
+		go mergeImages(ctx, file, overlayImg, resultImages)
 	}
 
 	var resp Response
 
 	for i := 0; i < len(files); i++ {
-		resp.Images = append(resp.Images, <-resultImages...)
+		select {
+		case images := <-resultImages:
+			resp.Images = append(resp.Images, images...)
+		case <-ctx.Done():
+			logger.Warn("Request timed out")
+			http.Error(w, "Request timed out", http.StatusRequestTimeout)
+			return
+		}
 	}
 
 	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
-		log.Printf("failed to encode response: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		logger.Errorf("Failed to encode response: %s", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -92,21 +118,29 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResponse)
 
-	log.Println("Response sent")
+	logger.Info("Response sent")
 }
 
-func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, resultImages chan []string) {
+func mergeImages(ctx context.Context, photoFile *multipart.FileHeader, overlayImg image.Image, resultImages chan<- []string) {
+	logger := logrus.WithField("photo", photoFile.Filename)
+
+	select {
+	case <-ctx.Done():
+		logger.Warn("Request timed out")
+		return
+	default:
+	}
 
 	photoReader, err := photoFile.Open()
 	if err != nil {
-		log.Printf("failed to open photo %s: %s", photoFile.Filename, err)
+		logger.Errorf("Failed to open photo: %s", err)
 		return
 	}
 	defer photoReader.Close()
 
 	bgImg, _, err := image.Decode(photoReader)
 	if err != nil {
-		log.Printf("failed to decode photo %s: %s", photoFile.Filename, err)
+		logger.Errorf("Failed to decode photo: %s", err)
 		return
 	}
 
@@ -120,9 +154,10 @@ func mergeImages(photoFile *multipart.FileHeader, overlayImg image.Image, result
 
 	var buff bytes.Buffer
 	if err := jpeg.Encode(&buff, finalImg, &jpeg.Options{Quality: jpeg.DefaultQuality}); err != nil {
-		log.Printf("failed to encode merged image file: %s", err)
+		logger.Errorf("Failed to encode merged image file: %s", err)
 		return
 	}
 
 	resultImages <- []string{base64.StdEncoding.EncodeToString(buff.Bytes())}
+	logger.Info("Image merged")
 }
