@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -90,8 +91,21 @@ func mergeImagesHandler(w http.ResponseWriter, r *http.Request) {
 	resultImages := make(chan []string, len(files))
 	logger.Infof("Starting to merge %d images", len(files))
 
+	maxWorkers := runtime.NumCPU()
+
+	pool := make(chan struct{}, maxWorkers)
+	for i := 0; i < maxWorkers; i++ {
+		pool <- struct{}{}
+	}
+
 	for _, file := range files {
-		go mergeImages(ctx, file, overlayImg, resultImages)
+		<-pool // acquire a worker slot
+		go func(file *multipart.FileHeader) {
+			defer func() {
+				pool <- struct{}{} // release the worker slot
+			}()
+			mergeImages(ctx, file, overlayImg, resultImages)
+		}(file)
 	}
 
 	var resp Response
