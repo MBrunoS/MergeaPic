@@ -1,3 +1,2 @@
-photos/
-merged_images/
-overlay.png
+node_modules/
+dist/
