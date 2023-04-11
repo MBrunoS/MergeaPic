@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import { mergeImages } from "./merge-images.js";
+import { mergeImages } from "./merge-images";
 
 const app = express();
 app.use(express.json());
