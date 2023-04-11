@@ -10,9 +10,7 @@ export async function mergeImages(
   return Promise.all(
     photos.map((photo) =>
       sharp(photo.buffer)
-        .resize(width, height, {
-          position: sharp.strategy.attention,
-        })
+        .resize(width, height)
         .composite([{ input: overlay.buffer }])
         .toFormat("jpg")
         .toBuffer()
