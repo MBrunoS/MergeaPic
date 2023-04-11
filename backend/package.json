@@ -2,8 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon --experimental-specifier-resolution=node tmp/server.js\"",
     "build": "tsc --noEmit && esbuild src/server.ts --minify --bundle --external:sharp --platform=node --outdir=build/",
     "build:externals": "node bundle-sharp.js",
     "start": "node build/server.js",

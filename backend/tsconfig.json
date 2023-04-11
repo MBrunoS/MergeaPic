@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "sourceMap": false,
-    "outDir": "dist",
+    "outDir": "tmp",
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
