@@ -1,13 +1,13 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { meros } from "meros/browser";
 import { AppContext } from "../context/AppContext";
 import {
-  Box,
   Button,
   ButtonGroup,
   Image,
+  Progress,
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";
@@ -17,24 +17,30 @@ import { Steps } from "../@types";
 export const MergeScreen: React.FC = () => {
   const { photos, overlay, setCurrentStep } = useContext(AppContext);
   const [mergedPhotos, setMergedPhotos] = useState<string[]>([]);
+  const [counter, setCounter] = useState(0);
+
+  const progress = (counter / photos.length) * 100;
 
   useEffect(() => {
-    axios
-      .post(
-        import.meta.env.VITE_API_URL,
-        {
-          photos,
-          overlay,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((res) => {
-        setMergedPhotos(res.data.images);
+    const apiCall = async () => {
+      const formData = new FormData();
+
+      formData.append("overlay", overlay);
+      photos.forEach((photo) => {
+        formData.append("photos", photo);
       });
+
+      const chunks = await fetch(import.meta.env.VITE_API_URL, {
+        method: "POST",
+        body: formData,
+      }).then(meros);
+
+      for await (const chunk of chunks as any) {
+        setCounter((prev) => prev + 1);
+        setMergedPhotos((prev) => [...prev, chunk.body]);
+      }
+    };
+    apiCall();
   }, []);
 
   function handleReturn() {
@@ -53,15 +59,23 @@ export const MergeScreen: React.FC = () => {
     });
   }
 
-  if (!mergedPhotos.length) {
-    return <div>Merging...</div>;
+  if (counter === 0) {
+    return (
+      <>
+        <div>Merging...</div>
+        <Progress size="xs" isIndeterminate w="4xl" />
+      </>
+    );
   }
 
   return (
     <>
-      <Text textAlign="center">
-        The images have been merged. You can download them below.
-      </Text>
+      {counter === photos.length && (
+        <Text fontSize="xl" fontWeight="bold" textAlign="center">
+          Merged {counter} photos
+        </Text>
+      )}
+      <Progress size="xs" value={progress} w="4xl" />
       <SimpleGrid columns={[2, null, 3, 5]} spacing={4} maxW="4xl">
         {mergedPhotos.map((photo) => (
           <Image

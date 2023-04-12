@@ -7,7 +7,7 @@ import { UploadImagesCard } from "./UploadImagesCard";
 export const HomeScreen: React.FC = () => {
   const { setPhotos, setCurrentStep } = useContext(AppContext);
   const [images, handleImagesChange] = useImagesUpload({
-    maxFiles: 20,
+    maxFiles: 25,
     maxFileSize: 2 * 1024 * 1024,
   });
 
@@ -21,7 +21,7 @@ export const HomeScreen: React.FC = () => {
   return (
     <UploadImagesCard
       text="Click here to choose the photos"
-      subtitle="(Max number of files: 20 / Max file size: 2MB)"
+      subtitle="(Max number of files: 25 / Max file size: 2MB)"
       handleImagesChange={handleImagesChange}
     />
   );
