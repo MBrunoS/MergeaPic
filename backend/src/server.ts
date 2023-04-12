@@ -13,22 +13,27 @@ interface MulterRequest extends Express.Request {
 }
 
 const middleware = upload.fields([
-  {
-    name: "overlay",
-    maxCount: 1,
-  },
-  {
-    name: "photos[]",
-  },
+  { name: "overlay", maxCount: 1 },
+  { name: "photos" },
 ]);
 
 app.post("/merge", middleware, async (req: MulterRequest, res) => {
   const overlay = req.files["overlay"][0];
-  const photos = req.files["photos[]"];
+  const photos = req.files["photos"];
 
-  const images = await mergeImages(overlay, photos);
+  res.setHeader("Content-Type", "multipart/mixed; boundary=merged-image");
 
-  return res.json({ images });
+  for await (const image of mergeImages(overlay, photos)) {
+    res.write("--merged-image\r\n");
+    res.write("Content-Type: image/jpeg\r\n");
+    res.write(`Content-Length: ${image.length}\r\n`);
+    res.write("\r\n");
+    res.write(image);
+    res.write("\r\n");
+  }
+
+  res.write("--merged-image--\r\n");
+  res.end();
 });
 
 const port = process.env.PORT || 3000;
