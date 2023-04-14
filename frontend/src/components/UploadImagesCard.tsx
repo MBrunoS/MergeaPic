@@ -46,6 +46,7 @@ export const UploadImagesCard: React.FC<UploadImagesCardProps> = ({
           alignItems="center"
           justifyContent="center"
           flexDirection="column"
+          textAlign="center"
         >
           <Text as="span">{text}</Text>
           <Text as="span" fontSize="sm">

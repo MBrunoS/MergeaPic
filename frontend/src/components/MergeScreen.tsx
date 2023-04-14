@@ -63,7 +63,7 @@ export const MergeScreen: React.FC = () => {
     return (
       <>
         <div>Merging...</div>
-        <Progress size="xs" isIndeterminate w="4xl" />
+        <Progress size="xs" isIndeterminate w="full" maxW="4xl" />
       </>
     );
   }
@@ -75,7 +75,7 @@ export const MergeScreen: React.FC = () => {
           Merged {counter} photos
         </Text>
       )}
-      <Progress size="xs" value={progress} w="4xl" />
+      <Progress size="xs" value={progress} w="full" maxW="4xl" />
       <SimpleGrid columns={[2, null, 3, 5]} spacing={4} maxW="4xl">
         {mergedPhotos.map((photo) => (
           <Image
