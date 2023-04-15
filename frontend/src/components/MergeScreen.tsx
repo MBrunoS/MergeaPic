@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { meros } from "meros/browser";
 import { AppContext } from "../context/AppContext";
 import {
   Button,
@@ -13,11 +12,13 @@ import {
 } from "@chakra-ui/react";
 import { DownloadSimple, House } from "@phosphor-icons/react";
 import { Steps } from "../@types";
+import { useResponseBodyParser } from "../hooks";
 
 export const MergeScreen: React.FC = () => {
   const { photos, overlay, setCurrentStep } = useContext(AppContext);
   const [mergedPhotos, setMergedPhotos] = useState<string[]>([]);
   const [counter, setCounter] = useState(0);
+  const parser = useResponseBodyParser();
 
   const progress = (counter / photos.length) * 100;
 
@@ -30,14 +31,16 @@ export const MergeScreen: React.FC = () => {
         formData.append("photos", photo);
       });
 
-      const chunks = await fetch(import.meta.env.VITE_API_URL, {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
         method: "POST",
         body: formData,
-      }).then(meros);
+      });
 
-      for await (const chunk of chunks as any) {
+      const chunks = parser.parse(response);
+
+      for await (const chunk of chunks) {
         setCounter((prev) => prev + 1);
-        setMergedPhotos((prev) => [...prev, chunk.body]);
+        setMergedPhotos((prev) => [...prev, chunk]);
       }
     };
     apiCall();
