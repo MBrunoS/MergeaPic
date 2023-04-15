@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "scripts": {
     "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon --experimental-specifier-resolution=node tmp/server.js\"",
     "build": "tsc --noEmit && esbuild src/server.ts --minify --bundle --external:sharp --platform=node --outdir=build/",
