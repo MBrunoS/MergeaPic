@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon --experimental-specifier-resolution=node tmp/server.js\"",
+    "dev": "concurrently --kill-others \"tsc --watch --module commonjs\" \"nodemon tmp/server.js --experimental-specifier-resolution=node\"",
     "build": "tsc --noEmit && esbuild src/server.ts --minify --bundle --external:sharp --platform=node --outdir=build/",
     "build:externals": "node bundle-sharp.js",
     "start": "node build/server.js",
