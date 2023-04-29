@@ -1,6 +1,6 @@
 import { Stack } from "@chakra-ui/react";
 import { useContext } from "react";
-import { Steps } from "./@types";
+import { Steps } from "../@types";
 import {
   ConfirmScreen,
   Header,
@@ -8,10 +8,10 @@ import {
   MergeScreen,
   OverlayScreen,
   PreviewScreen,
-} from "./components";
-import { AppContext } from "./context/AppContext";
+} from "../components";
+import { AppContext } from "../context/AppContext";
 
-export function App() {
+export default function App() {
   const { currentStep } = useContext(AppContext);
 
   return (
