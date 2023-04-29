@@ -4,9 +4,11 @@ import { useContext } from "react";
 import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { PreviewImages } from "./PreviewImages";
+import { useTranslation } from "react-i18next";
 
 export const ConfirmScreen: React.FC = () => {
   const { photos, overlay, setCurrentStep } = useContext(AppContext);
+  const { t } = useTranslation();
 
   function handleReturn() {
     setCurrentStep(Steps.Overlay);
@@ -19,12 +21,12 @@ export const ConfirmScreen: React.FC = () => {
   return (
     <>
       <Stack maxW="4xl">
-        <Text>Overlay:</Text>
+        <Text>{t("confirmScreen.overlay")}</Text>
         <Flex px={[8, null, 12, 16]} align="center">
           {overlay.name && <PreviewImages images={[overlay]} />}
         </Flex>
 
-        <Text>Photos:</Text>
+        <Text>{t("confirmScreen.photos")}</Text>
         <PreviewImages images={photos} variant="grid" />
       </Stack>
 
@@ -40,14 +42,14 @@ export const ConfirmScreen: React.FC = () => {
           background="white"
           onClick={handleReturn}
         >
-          Return
+          {t("navButtons.return")}
         </Button>
         <Button
           rightIcon={<ArrowsMerge weight="bold" />}
           onClick={handleContinue}
           size="lg"
         >
-          Merge
+          {t("navButtons.merge")}
         </Button>
       </ButtonGroup>
     </>

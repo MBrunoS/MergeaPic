@@ -4,9 +4,11 @@ import { useContext } from "react";
 import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { PreviewImages } from "./PreviewImages";
+import { useTranslation } from "react-i18next";
 
 export const PreviewScreen: React.FC = () => {
   const { photos, setPhotos, setCurrentStep } = useContext(AppContext);
+  const { t } = useTranslation();
 
   function handleReturn() {
     setPhotos([]);
@@ -27,13 +29,13 @@ export const PreviewScreen: React.FC = () => {
           background="white"
           onClick={handleReturn}
         >
-          Return
+          {t("navButtons.return")}
         </Button>
         <Button
           rightIcon={<ArrowRight weight="bold" />}
           onClick={handleContinue}
         >
-          Continue
+          {t("navButtons.continue")}
         </Button>
       </ButtonGroup>
     </>

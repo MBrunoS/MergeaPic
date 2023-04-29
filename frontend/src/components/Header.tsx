@@ -1,7 +1,9 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export const Header: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <Box textAlign="center">
       <Heading
@@ -19,7 +21,7 @@ export const Header: React.FC = () => {
           color: "gray.400",
         }}
       >
-        Simplify photos overlay merge
+        {t("header.subtitle")}
       </Text>
     </Box>
   );

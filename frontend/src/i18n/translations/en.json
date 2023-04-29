@@ -1,0 +1,32 @@
+{
+  "translation": {
+    "header": {
+      "subtitle": "Photo merge simplified"
+    },
+    "uploadImagesCard": {
+      "photos": {
+        "text": "Click here to choose the photos",
+        "subtitle": "(Max number of files: {{maxFiles}} / Max file size: {{maxFileSize}})"
+      },
+      "overlay": {
+        "text": "Now choose the overlay to merge with the photos",
+        "subtitle": "(Max file size: {{maxFileSize}})"
+      }
+    },
+    "confirmScreen": {
+      "overlay": "Overlay image",
+      "photos": "Photos"
+    },
+    "mergeScreen": {
+      "merging": "Merging...",
+      "mergedPhotos": "{{counter}} photos merged"
+    },
+    "navButtons": {
+      "return": "Return",
+      "continue": "Continue",
+      "merge": "Merge",
+      "returnHome": "Return to Home",
+      "download": "Download All"
+    }
+  }
+}

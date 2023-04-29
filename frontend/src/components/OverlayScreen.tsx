@@ -5,6 +5,7 @@ import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { useImagesUpload } from "../hooks";
 import { UploadImagesCard } from "./UploadImagesCard";
+import { useTranslation } from "react-i18next";
 
 export const OverlayScreen: React.FC = () => {
   const { setOverlay, setCurrentStep } = useContext(AppContext);
@@ -12,6 +13,7 @@ export const OverlayScreen: React.FC = () => {
     maxFiles: 1,
     maxFileSize: 2 * 1024 * 1024,
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!images.length) return;
@@ -27,8 +29,10 @@ export const OverlayScreen: React.FC = () => {
   return (
     <>
       <UploadImagesCard
-        text="Now choose the overlay to merge with the photos"
-        subtitle="(Max file size: 2MB)"
+        text={t("uploadImagesCard.overlay.text")}
+        subtitle={t("uploadImagesCard.overlay.subtitle", {
+          maxFileSize: "2MB",
+        })}
         handleImagesChange={handleImagesChange}
         isMultiple={false}
       />
@@ -40,7 +44,7 @@ export const OverlayScreen: React.FC = () => {
           background="white"
           onClick={handleReturn}
         >
-          Return
+          {t("navButtons.return")}
         </Button>
       </ButtonGroup>
     </>

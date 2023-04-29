@@ -13,12 +13,14 @@ import {
 import { DownloadSimple, House } from "@phosphor-icons/react";
 import { Steps } from "../@types";
 import { useResponseBodyParser } from "../hooks";
+import { useTranslation } from "react-i18next";
 
 export const MergeScreen: React.FC = () => {
   const { photos, overlay, setCurrentStep } = useContext(AppContext);
   const [mergedPhotos, setMergedPhotos] = useState<string[]>([]);
   const [counter, setCounter] = useState(0);
   const parser = useResponseBodyParser();
+  const { t } = useTranslation();
 
   const progress = (counter / photos.length) * 100;
 
@@ -65,7 +67,7 @@ export const MergeScreen: React.FC = () => {
   if (counter === 0) {
     return (
       <>
-        <div>Merging...</div>
+        <div>{t("mergeScreen.merging")}</div>
         <Progress size="xs" isIndeterminate w="full" maxW="4xl" />
       </>
     );
@@ -75,7 +77,7 @@ export const MergeScreen: React.FC = () => {
     <>
       {counter === photos.length && (
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
-          Merged {counter} photos
+          {t("mergeScreen.mergedPhotos", { counter })}
         </Text>
       )}
       <Progress size="xs" value={progress} w="full" maxW="4xl" />
@@ -97,7 +99,7 @@ export const MergeScreen: React.FC = () => {
           colorScheme="blue"
           onClick={handleReturn}
         >
-          Return to Home
+          {t("navButtons.returnHome")}
         </Button>
         <Button
           rightIcon={<DownloadSimple weight="bold" />}
@@ -105,7 +107,7 @@ export const MergeScreen: React.FC = () => {
           colorScheme="green"
           size="lg"
         >
-          Download All
+          {t("navButtons.download")}
         </Button>
       </ButtonGroup>
     </>

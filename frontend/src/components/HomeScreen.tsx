@@ -3,6 +3,7 @@ import { Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { useImagesUpload } from "../hooks";
 import { UploadImagesCard } from "./UploadImagesCard";
+import { useTranslation } from "react-i18next";
 
 export const HomeScreen: React.FC = () => {
   const { setPhotos, setCurrentStep } = useContext(AppContext);
@@ -10,6 +11,7 @@ export const HomeScreen: React.FC = () => {
     maxFiles: 25,
     maxFileSize: 2 * 1024 * 1024,
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!images.length) return;
@@ -20,8 +22,11 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <UploadImagesCard
-      text="Click here to choose the photos"
-      subtitle="(Max number of files: 25 / Max file size: 2MB)"
+      text={t("uploadImagesCard.photos.text")}
+      subtitle={t("uploadImagesCard.photos.subtitle", {
+        maxFiles: 25,
+        maxFileSize: "2MB",
+      })}
       handleImagesChange={handleImagesChange}
     />
   );
