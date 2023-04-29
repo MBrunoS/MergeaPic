@@ -3,10 +3,11 @@ import { appWithI18Next } from "ni18n";
 import { ni18nConfig } from "../../ni18n.config";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AppProvider } from "../context/AppContext";
+import { theme } from "../theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <AppProvider>
         <Component {...pageProps} />
       </AppProvider>
