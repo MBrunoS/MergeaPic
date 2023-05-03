@@ -96,6 +96,12 @@ export const MergeScreen: React.FC = () => {
           leftIcon={<House weight="bold" />}
           variant="outline"
           background="white"
+          _dark={{
+            background: "gray.800",
+            _hover: {
+              background: "gray.700",
+            },
+          }}
           colorScheme="blue"
           onClick={handleReturn}
         >

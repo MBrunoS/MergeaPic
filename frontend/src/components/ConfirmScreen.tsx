@@ -40,6 +40,12 @@ export const ConfirmScreen: React.FC = () => {
           leftIcon={<ArrowLeft weight="bold" />}
           variant="outline"
           background="white"
+          _dark={{
+            background: "gray.800",
+            _hover: {
+              background: "gray.700",
+            },
+          }}
           onClick={handleReturn}
         >
           {t("navButtons.return")}
