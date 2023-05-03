@@ -33,7 +33,7 @@ export const MergeScreen: React.FC = () => {
         formData.append("photos", photo);
       });
 
-      const response = await fetch(import.meta.env.VITE_API_URL, {
+      const response = await fetch("/api/merge", {
         method: "POST",
         body: formData,
       });
