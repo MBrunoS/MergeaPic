@@ -1,9 +1,9 @@
 import { renderHook } from "@testing-library/react-hooks";
-import { useImagesUpload } from "./useImagesUpload";
+import { toBase64, useImagesUpload } from "./useImagesUpload";
 import { vi } from "vitest";
 
 describe("useImagesUpload", () => {
-  it("should upload images when the file size is less than or equal to maxFileSize", () => {
+  it("should upload images when the file size is less than or equal to maxFileSize", async () => {
     const { result } = renderHook(() =>
       useImagesUpload({ maxFiles: 2, maxFileSize: 1000 })
     );
@@ -19,11 +19,14 @@ describe("useImagesUpload", () => {
     });
     const alert = vi.spyOn(window, "alert").mockImplementation(() => {});
 
-    handleImagesChange({ target: inputElement } as any);
-
+    await handleImagesChange({ target: inputElement } as any);
     const [uploadedFiles] = result.current;
 
-    expect(uploadedFiles).toEqual([file1, file2]);
+    const expectedFiles = [
+      { src: await toBase64(file1), name: file1.name },
+      { src: await toBase64(file2), name: file2.name },
+    ];
+    expect(uploadedFiles).toEqual(expectedFiles);
     alert.mockRestore();
   });
 
