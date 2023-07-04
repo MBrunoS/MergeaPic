@@ -21,6 +21,7 @@
     "jszip": "^3.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^4.7.4",
     "react-i18next": "^12.2.0"
   },
   "devDependencies": {

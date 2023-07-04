@@ -5,3 +5,17 @@ export enum Steps {
   Merge,
   Download,
 }
+
+export type ImageFile = {
+  src: string;
+  name: string;
+};
+
+export type CroppedImg = {
+  zoom: number;
+  crop: { x: number; y: number };
+} & ImageFile;
+
+export type PhotosPreview = {
+  [key: string]: CroppedImg;
+};
