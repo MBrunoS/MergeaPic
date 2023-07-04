@@ -1,10 +1,11 @@
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { ArrowLeft, ArrowsMerge } from "@phosphor-icons/react";
 import { useContext } from "react";
-import { Steps } from "../@types";
+import { CroppedImg, ImageFile, Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
-import { PreviewImages } from "../components";
+import { ImageModal, PreviewImages } from "../components";
 import { useTranslation } from "react-i18next";
+import { EditProvider } from "../context";
 
 export const EditScreen: React.FC = () => {
   const { photos, setOverlay, setPhotos, setCurrentStep } =
@@ -12,7 +13,7 @@ export const EditScreen: React.FC = () => {
   const { t } = useTranslation();
 
   function handleReturn() {
-    setOverlay({} as File);
+    setOverlay({} as ImageFile);
     setCurrentStep(Steps.Overlay);
   }
 
@@ -21,8 +22,9 @@ export const EditScreen: React.FC = () => {
   }
 
   return (
-    <>
-      <PreviewImages images={photos} updateImages={setPhotos} variant="grid" />
+    <EditProvider>
+      <PreviewImages />
+
       <ButtonGroup
         colorScheme="blue"
         position="fixed"
@@ -51,6 +53,8 @@ export const EditScreen: React.FC = () => {
           {t("navButtons.merge")}
         </Button>
       </ButtonGroup>
-    </>
+
+      <ImageModal />
+    </EditProvider>
   );
 };

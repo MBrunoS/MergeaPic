@@ -1,13 +1,13 @@
 import { createContext, useState } from "react";
-import { Steps } from "../@types";
+import { ImageFile, Steps } from "../@types";
 
 type AppContextType = {
   currentStep: Steps;
   setCurrentStep: React.Dispatch<React.SetStateAction<Steps>>;
-  photos: File[];
-  setPhotos: React.Dispatch<React.SetStateAction<File[]>>;
-  overlay: File;
-  setOverlay: React.Dispatch<React.SetStateAction<File>>;
+  photos: ImageFile[];
+  setPhotos: React.Dispatch<React.SetStateAction<ImageFile[]>>;
+  overlay: ImageFile;
+  setOverlay: React.Dispatch<React.SetStateAction<ImageFile>>;
 };
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -18,8 +18,8 @@ type AppProviderProps = {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(Steps.Upload);
-  const [photos, setPhotos] = useState<File[]>([]);
-  const [overlay, setOverlay] = useState<File>({} as File);
+  const [photos, setPhotos] = useState<ImageFile[]>([]);
+  const [overlay, setOverlay] = useState<ImageFile>({} as ImageFile);
 
   return (
     <AppContext.Provider
