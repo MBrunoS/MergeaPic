@@ -1,15 +1,13 @@
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { ArrowLeft, ArrowsMerge } from "@phosphor-icons/react";
 import { useContext } from "react";
-import { CroppedImg, ImageFile, Steps } from "../@types";
+import { ImageFile, Steps } from "../@types";
 import { AppContext } from "../context/AppContext";
 import { ImageModal, PreviewImages } from "../components";
 import { useTranslation } from "react-i18next";
-import { EditProvider } from "../context";
 
 export const EditScreen: React.FC = () => {
-  const { photos, setOverlay, setPhotos, setCurrentStep } =
-    useContext(AppContext);
+  const { setOverlay, setCurrentStep } = useContext(AppContext);
   const { t } = useTranslation();
 
   function handleReturn() {
@@ -22,7 +20,7 @@ export const EditScreen: React.FC = () => {
   }
 
   return (
-    <EditProvider>
+    <>
       <PreviewImages />
 
       <ButtonGroup
@@ -55,6 +53,6 @@ export const EditScreen: React.FC = () => {
       </ButtonGroup>
 
       <ImageModal />
-    </EditProvider>
+    </>
   );
 };

@@ -1,22 +1,32 @@
-import { useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { AppContext } from "../context";
 import { PhotosPreview } from "../@types";
 
-export function usePhotosPreview() {
+export function usePhotosPreview(): [
+  PhotosPreview,
+  Dispatch<SetStateAction<PhotosPreview>>
+] {
   const { photos } = useContext(AppContext);
+  const [photosPreview, setPhotosPreview] = useState<PhotosPreview>({});
 
-  const photosPreview = useState(() => {
-    let photosPreview: PhotosPreview = {};
+  useEffect(() => {
+    let previews: PhotosPreview = {};
     for (const photo of photos) {
-      photosPreview[photo.name] = {
+      previews[photo.name] = {
         src: photo.src,
         name: photo.name,
         zoom: 1,
         crop: { x: 0, y: 0 },
       };
     }
-    return photosPreview;
-  });
+    setPhotosPreview(previews);
+  }, [photos]);
 
-  return photosPreview;
+  return [photosPreview, setPhotosPreview];
 }
