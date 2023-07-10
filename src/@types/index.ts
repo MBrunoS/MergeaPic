@@ -17,5 +17,5 @@ export type CroppedImg = {
 } & ImageFile;
 
 export type PhotosPreview = {
-  [key: string]: CroppedImg;
+  [key: string]: CroppedImg & { imgElement: HTMLImageElement };
 };

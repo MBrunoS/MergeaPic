@@ -6,9 +6,11 @@ import { AppContext } from "../context/AppContext";
 import { useImagesUpload } from "../hooks";
 import { UploadImagesCard } from "../components";
 import { useTranslation } from "react-i18next";
+import { EditContext } from "../context";
 
 export const OverlayScreen: React.FC = () => {
   const { setOverlay, setPhotos, setCurrentStep } = useContext(AppContext);
+  const { setPhotosPreview } = useContext(EditContext);
   const [images, handleImagesChange] = useImagesUpload({
     maxFiles: 1,
     maxFileSize: 2 * 1024 * 1024,
@@ -19,11 +21,12 @@ export const OverlayScreen: React.FC = () => {
     if (!images.length) return;
 
     setOverlay(images[0]);
-    setCurrentStep(Steps.Edit);
+    setCurrentStep(Steps.Merge);
   }, [images]);
 
   function handleReturn() {
     setPhotos([]);
+    setPhotosPreview({});
     setCurrentStep(Steps.Upload);
   }
 

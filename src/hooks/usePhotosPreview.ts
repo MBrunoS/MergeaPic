@@ -18,11 +18,14 @@ export function usePhotosPreview(): [
   useEffect(() => {
     let previews: PhotosPreview = {};
     for (const photo of photos) {
+      const img = new Image();
+      img.src = photo.src;
       previews[photo.name] = {
         src: photo.src,
         name: photo.name,
         zoom: 1,
         crop: { x: 0, y: 0 },
+        imgElement: img,
       };
     }
     setPhotosPreview(previews);
